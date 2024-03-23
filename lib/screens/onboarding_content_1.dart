@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 class OnboardingContent1 extends StatelessWidget {
   const OnboardingContent1({super.key});
@@ -10,10 +11,21 @@ class OnboardingContent1 extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
           Padding(
-            padding: const EdgeInsets.only(top: 50.0, bottom: 30.0),
-            child: Image.asset(
-              'assets/images/onboarding_1.png',
-              height: 300,
+            padding: const EdgeInsets.only(top: 80.0, bottom: 30.0),
+            child: Stack(
+              alignment: Alignment.center,
+              children: [
+                SvgPicture.asset(
+                  'assets/images/device.svg',
+                  height: 270,
+                ),
+                Positioned(
+                  child: SvgPicture.asset(
+                    'assets/images/illustration.svg',
+                    height: 270,
+                  ),
+                ),
+              ],
             ),
           ),
           const Text(

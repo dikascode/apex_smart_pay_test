@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'home_screen.dart';
 import 'onboarding_content_1.dart';
 import 'onboarding_content_2.dart';
+import 'sign_in_screen.dart';
 
 class OnboardingScreens extends StatefulWidget {
   const OnboardingScreens({super.key});
@@ -44,7 +45,7 @@ class _OnboardingScreensState extends State<OnboardingScreens> {
           TextButton(
             onPressed: () => Navigator.pushReplacement(
               context,
-              MaterialPageRoute(builder: (context) => const HomeScreen()),
+              MaterialPageRoute(builder: (context) => const SignInScreen()),
             ),
             child: const Text('Skip', style: TextStyle(color: Colors.black)),
           ),
@@ -85,7 +86,7 @@ class _OnboardingScreensState extends State<OnboardingScreens> {
                         Navigator.pushReplacement(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => const HomeScreen()),
+                              builder: (context) => const SignInScreen()),
                         );
                       } else {
                         _pageController.nextPage(
@@ -102,7 +103,7 @@ class _OnboardingScreensState extends State<OnboardingScreens> {
                           double.infinity, 50),
                       shape: RoundedRectangleBorder(
                         borderRadius:
-                            BorderRadius.circular(30),
+                            BorderRadius.circular(20),
                       ),
                       padding: const EdgeInsets.all(16),
                     ),
