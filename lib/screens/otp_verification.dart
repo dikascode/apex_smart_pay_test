@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../widgets/custom_back_button.dart';
 import 'profile_setup_screen.dart';
 import '../utils/pin_field_utils.dart';
+import '../styles/styles.dart';
 
 class OtpVerification extends StatefulWidget {
   final String redactedEmail;
@@ -12,15 +13,15 @@ class OtpVerification extends StatefulWidget {
 }
 
 class _OtpVerificationState extends State<OtpVerification> {
-  final codeLength = 5;
+  final _codeLength = 5;
   List<TextEditingController> controllers = [];
   List<FocusNode> focusNodes = [];
-  bool isButtonActive = false;
+  bool _isButtonActive = false;
 
   @override
   void initState() {
     super.initState();
-    for (int i = 0; i < codeLength; i++) {
+    for (int i = 0; i < _codeLength; i++) {
       controllers.add(TextEditingController());
       focusNodes.add(FocusNode());
       // Add listener to each controller
@@ -28,7 +29,7 @@ class _OtpVerificationState extends State<OtpVerification> {
         // Update isButtonActive when any field changes
         final allFilled =
             controllers.every((controller) => controller.text.isNotEmpty);
-        setState(() => isButtonActive = allFilled);
+        setState(() => _isButtonActive = allFilled);
       });
     }
   }
@@ -65,13 +66,13 @@ class _OtpVerificationState extends State<OtpVerification> {
             const SizedBox(height: 8),
             Text(
               'We sent a code to (${widget.redactedEmail}). Enter it here to verify your identity',
-              style:  const TextStyle(fontSize: 16, color: Color(0xFF6B7280)),
+              style: customSubtitleTextStyle,
             ),
             const SizedBox(height: 24),
             Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children:
-                  List.generate(codeLength, (index) => _buildCodeBox(index)),
+                  List.generate(_codeLength, (index) => _buildCodeBox(index)),
             ),
             const SizedBox(height: 30),
             const Text(
@@ -84,30 +85,18 @@ class _OtpVerificationState extends State<OtpVerification> {
             ),
             const SizedBox(height: 60),
             ElevatedButton(
-              onPressed: isButtonActive
+              onPressed: _isButtonActive
                   ? () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => const ProfileSetupScreen()),
-                        );
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const ProfileSetupScreen()),
+                      );
                     }
                   : null,
-              style: ElevatedButton.styleFrom(
-                backgroundColor:
-                    isButtonActive ? const Color(0xFF111827) : Colors.grey[400],
-                foregroundColor: Colors.white,
-                minimumSize: const Size(double.infinity, 50),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(20),
-                ),
-                padding: const EdgeInsets.all(16),
-              ),
+              style: activeButtonStyle(_isButtonActive),
               child: const Text('Confirm',
-                  style: TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                  )),
+                  style: customButtonBoldTextStyle,),
             ),
           ],
         ),
@@ -117,8 +106,8 @@ class _OtpVerificationState extends State<OtpVerification> {
 
   Widget _buildCodeBox(int index) {
     return Container(
-      width: 50,
-      height: 50,
+      width: 60,
+      height: 60,
       decoration: BoxDecoration(
         color: const Color.fromARGB(255, 223, 232, 241),
         borderRadius: BorderRadius.circular(8),
@@ -126,21 +115,21 @@ class _OtpVerificationState extends State<OtpVerification> {
           color: focusNodes[index].hasFocus
               ? const Color(0xFF2FA2B9)
               : Colors.transparent,
-          width: 2,
+          width: 1,
         ),
       ),
       child: TextField(
-        controller: controllers[index],
-        focusNode: focusNodes[index],
-        textAlign: TextAlign.center,
-        maxLength: 1,
-        decoration: const InputDecoration(
-          counterText: "",
-          border: InputBorder.none,
-        ),
-        keyboardType: TextInputType.number,
-        onChanged: (value) => PinFieldUtils.handlePinFieldChange(value, index, focusNodes, codeLength, context)
-      ),
+          controller: controllers[index],
+          focusNode: focusNodes[index],
+          textAlign: TextAlign.center,
+          maxLength: 1,
+          decoration: const InputDecoration(
+            counterText: "",
+            border: InputBorder.none,
+          ),
+          keyboardType: TextInputType.number,
+          onChanged: (value) => PinFieldUtils.handlePinFieldChange(
+              value, index, focusNodes, _codeLength, context)),
     );
   }
 }

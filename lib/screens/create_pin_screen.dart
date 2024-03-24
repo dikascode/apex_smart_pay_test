@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../widgets/custom_back_button.dart';
 import '../utils/pin_field_utils.dart';
 import 'confirmation_screen.dart';
+import '../styles/styles.dart';
 
 class CreatePinScreen extends StatefulWidget {
   const CreatePinScreen({super.key});
@@ -15,7 +16,7 @@ class _CreatePinScreenState extends State<CreatePinScreen> {
 final codeLength = 5;
   List<TextEditingController> controllers = [];
   List<FocusNode> focusNodes = [];
-  bool isButtonActive = false;
+  bool _isButtonActive = false;
 
   @override
   void initState() {
@@ -28,7 +29,7 @@ final codeLength = 5;
         // Update isButtonActive when any field changes
         final allFilled =
             controllers.every((controller) => controller.text.isNotEmpty);
-        setState(() => isButtonActive = allFilled);
+        setState(() => _isButtonActive = allFilled);
       });
     }
   }
@@ -65,7 +66,7 @@ final codeLength = 5;
             const SizedBox(height: 8),
             const Text(
               'We use state-of-the-art security measures to protect your information at all times',
-              style:  TextStyle(fontSize: 16, color: Color(0xFF6B7280)),
+              style:  customSubtitleTextStyle,
             ),
             const SizedBox(height: 24),
             Row(
@@ -76,7 +77,7 @@ final codeLength = 5;
     
             const SizedBox(height: 60),
             ElevatedButton(
-              onPressed: isButtonActive
+              onPressed: _isButtonActive
                   ? () {
                         Navigator.push(
                           context,
@@ -85,17 +86,8 @@ final codeLength = 5;
                         );
                     }
                   : null,
-              style: ElevatedButton.styleFrom(
-                backgroundColor:
-                    isButtonActive ? const Color(0xFF111827) : Colors.grey[400],
-                foregroundColor: Colors.white,
-                minimumSize: const Size(double.infinity, 50),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(20),
-                ),
-                padding: const EdgeInsets.all(16),
-              ),
-              child: const Text('Create PIN'),
+              style: activeButtonStyle(_isButtonActive),
+              child: const Text('Create PIN', style: customButtonBoldTextStyle),
             ),
           ],
         ),

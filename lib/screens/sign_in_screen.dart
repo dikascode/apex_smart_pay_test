@@ -1,17 +1,49 @@
 import 'package:flutter/material.dart';
+import 'package:smart_pay/styles/styles.dart';
 import '../widgets/social_sign_in_button.dart';
 import 'sign_up_screen.dart';
 import '../widgets/custom_back_button.dart';
+import 'password_recovery_screen.dart';
 
-class SignInScreen extends StatelessWidget {
+class SignInScreen extends StatefulWidget {
   const SignInScreen({super.key});
+
+  @override
+  _SignInScreenState createState() => _SignInScreenState();
+}
+
+class _SignInScreenState extends State<SignInScreen> {
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+  bool _isButtonActive = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _emailController.addListener(_updateButtonState);
+    _passwordController.addListener(_updateButtonState);
+  }
+
+  void _updateButtonState() {
+    setState(() {
+      _isButtonActive = _emailController.text.isNotEmpty &&
+          _passwordController.text.isNotEmpty;
+    });
+  }
+
+  @override
+  void dispose() {
+    _emailController.dispose();
+    _passwordController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-        leading: const CustomBackButton(),
-        elevation: 0,
+          leading: const CustomBackButton(),
+          elevation: 0,
         ),
         body: SingleChildScrollView(
           padding: const EdgeInsets.all(16.0),
@@ -26,44 +58,29 @@ class SignInScreen extends StatelessWidget {
               const SizedBox(height: 8.0),
               const Text(
                 'Welcome back, Sign in to your account',
-                style: TextStyle(fontSize: 20.0, color: Color(0xFF6B7280)),
+                style: customSubtitleTextStyle,
               ),
               const SizedBox(height: 32.0),
               TextField(
-                decoration: InputDecoration(
-                  hintText: 'Email',
-                  filled: true,
-                  fillColor: const Color(0xFFF9FAFB),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(8.0),
-                    borderSide: BorderSide.none,
-                  ),
-                  hintStyle: const TextStyle(color: Color(0xFF9CA3AF)),
-                ),
-                keyboardType: TextInputType.emailAddress
-              ),
+                  controller: _emailController,
+                  decoration: customInputDecoration('Email'),
+                  keyboardType: TextInputType.emailAddress),
               const SizedBox(height: 16.0),
               TextField(
-                decoration: InputDecoration(
-                  hintText: 'Password',
-                  filled: true,
-                  fillColor: const Color(0xFFF9FAFB),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(8.0),
-                    borderSide: BorderSide.none,
-                  ),
-                  hintStyle: const TextStyle(color: Color(0xFF9CA3AF)),
-                  suffixIcon: const Icon(Icons.visibility_off,
-                      color: Color(0xFF9CA3AF)),
-                ),
-                obscureText: true,
-                keyboardType: TextInputType.visiblePassword
-              ),
+                  controller: _passwordController,
+                  decoration: customInputDecoration('Password'),
+                  obscureText: true,
+                  keyboardType: TextInputType.visiblePassword),
               Align(
                 alignment: Alignment.centerLeft,
                 child: TextButton(
                   onPressed: () {
                     // Forgot password onpress
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const PasswordRecoveryScreen()),
+                    );
                   },
                   style: TextButton.styleFrom(
                     foregroundColor: const Color(0xFF0A6375),
@@ -76,20 +93,8 @@ class SignInScreen extends StatelessWidget {
                 onPressed: () {
                   // Sign in onpress
                 },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFF111827),
-                  foregroundColor: Colors.white,
-                  minimumSize: const Size(double.infinity, 50),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                  padding: const EdgeInsets.all(16),
-                ),
-                child: const Text('Sign In',
-                    style: TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                    )),
+                style: activeButtonStyle(_isButtonActive),
+                child: const Text('Sign In', style: customButtonBoldTextStyle),
               ),
               const SizedBox(height: 32.0),
               Row(

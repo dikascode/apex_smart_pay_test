@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:smart_pay/screens/otp_verification.dart';
 import '../widgets/custom_back_button.dart';
 import '../widgets/social_sign_in_button.dart';
+import 'sign_in_screen.dart';
+import '../styles/styles.dart';
 
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({super.key});
@@ -12,7 +14,7 @@ class SignUpScreen extends StatefulWidget {
 
 class _SignUpScreenState extends State<SignUpScreen> {
   final TextEditingController _emailController = TextEditingController();
-  bool _isEmailFilled = false;
+  bool _isButtonActive = false;
 
   @override
   void initState() {
@@ -28,42 +30,41 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
   void _onEmailChanged() {
     final isFilled = _emailController.text.isNotEmpty;
-    if (isFilled != _isEmailFilled) {
+    if (isFilled != _isButtonActive) {
       setState(() {
-        _isEmailFilled = isFilled;
+        _isButtonActive = isFilled;
       });
     }
   }
 
   void _onSignUpPressed() {
-  final String userEmail = _emailController.text;
-    final String redactedEmail = _redactEmail(userEmail); 
+    final String userEmail = _emailController.text;
+    final String redactedEmail = _redactEmail(userEmail);
 
-  Navigator.push(
-    context,
-    MaterialPageRoute(
-      builder: (context) => OtpVerification(redactedEmail: redactedEmail),
-    ),
-  );
-}
-
-String _redactEmail(String email) {
-  final atIndex = email.indexOf('@');
-  if (atIndex != -1) {
-    return '*****${email.substring(atIndex)}';
-  } else {
-    return '*****@example.com'; // Fallback in case the email does not contain '@'
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => OtpVerification(redactedEmail: redactedEmail),
+      ),
+    );
   }
-}
 
+  String _redactEmail(String email) {
+    final atIndex = email.indexOf('@');
+    if (atIndex != -1) {
+      return '*****${email.substring(atIndex)}';
+    } else {
+      return '*****@example.com'; // Fallback in case the email does not contain '@'
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-        leading: const CustomBackButton(),
-        elevation: 0,
-      ),
+          leading: const CustomBackButton(),
+          elevation: 0,
+        ),
         body: SingleChildScrollView(
           padding: const EdgeInsets.all(16.0),
           child: Column(
@@ -76,42 +77,20 @@ String _redactEmail(String email) {
               ),
               const SizedBox(height: 8.0),
               TextField(
-                controller: _emailController,
-                decoration: InputDecoration(
-                  hintText: 'Email',
-                  filled: true,
-                  fillColor: const Color(0xFFF9FAFB),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(8.0),
-                    borderSide: BorderSide.none,
-                  ),
-                  hintStyle: const TextStyle(color: Color(0xFF9CA3AF)),
-                ),
-                keyboardType: TextInputType.emailAddress
-              ),
+                  controller: _emailController,
+                  decoration: customInputDecoration('Email'),
+                  keyboardType: TextInputType.emailAddress),
               const SizedBox(height: 24.0),
-               ElevatedButton(
-              onPressed: _isEmailFilled
-                  ? () {
-                      // Sign up onPress logic
-                     _onSignUpPressed();
-                    }
-                  : null,
-              style: ElevatedButton.styleFrom(
-                backgroundColor: _isEmailFilled ? const Color(0xFF111827) : Colors.grey[400],
-                foregroundColor: Colors.white,
-                minimumSize: const Size(double.infinity, 50),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(20),
-                ),
-                padding: const EdgeInsets.all(16),
+              ElevatedButton(
+                onPressed: _isButtonActive
+                    ? () {
+                        // Sign up onPress logic
+                        _onSignUpPressed();
+                      }
+                    : null,
+                style: activeButtonStyle(_isButtonActive),
+                child: const Text('Sign Up', style: customButtonBoldTextStyle),
               ),
-              child: const Text('Sign Up',
-                  style: TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                  )),
-            ),
               const SizedBox(height: 32.0),
               Row(
                 children: <Widget>[
@@ -138,20 +117,15 @@ String _redactEmail(String email) {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: <Widget>[
-                 SocialSignInButton(
+                  SocialSignInButton(
                     assetName: 'assets/images/google_icon.svg',
                     label: 'Google',
-                    onPressed: () {
-
-                    },
+                    onPressed: () {},
                   ),
                   SocialSignInButton(
-                    assetName: 'assets/images/apple_icon.svg',
-                    label: 'Apple',
-                     onPressed: () {
-
-                    }
-                  ),
+                      assetName: 'assets/images/apple_icon.svg',
+                      label: 'Apple',
+                      onPressed: () {}),
                 ],
               ),
               Padding(
@@ -166,6 +140,11 @@ String _redactEmail(String email) {
                     TextButton(
                       onPressed: () {
                         // Navigate to sign in
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => const SignInScreen()),
+                        );
                       },
                       child: const Text(
                         'Sign In',

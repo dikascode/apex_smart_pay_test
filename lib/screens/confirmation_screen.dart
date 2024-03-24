@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'home_screen.dart';
+import '../styles/styles.dart';
 
 class ConfirmationScreen extends StatelessWidget {
   const ConfirmationScreen({super.key});
@@ -39,9 +40,7 @@ class ConfirmationScreen extends StatelessWidget {
             const SizedBox(height: 8),
             const Text(
               'You’ve completed the onboarding, you can start using',
-              style: TextStyle(
-                fontSize: 16,
-              ),
+              style: customSubtitleTextStyle,
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 48),
@@ -53,15 +52,8 @@ class ConfirmationScreen extends StatelessWidget {
                               builder: (context) => const HomeScreen()),
                         );
               },
-              style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFF111827),
-                  foregroundColor: Colors.white,
-                  minimumSize: const Size(double.infinity, 50),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                  padding: const EdgeInsets.all(16)),
-              child: const Text('Get Started'),
+              style: activeButtonStyle(true),
+              child: const Text('Get Started', style: customButtonBoldTextStyle),
             ),
           ],
         ),
