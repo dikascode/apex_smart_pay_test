@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../widgets/custom_back_button.dart';
+import 'profile_setup_screen.dart';
 
 class OtpVerification extends StatefulWidget {
   final String redactedEmail;
@@ -63,7 +64,7 @@ class _OtpVerificationState extends State<OtpVerification> {
             ),
             const SizedBox(height: 8),
             Text(
-              'We send a code to (${widget.redactedEmail}). Enter it here to verify your identity',
+              'We sent a code to (${widget.redactedEmail}). Enter it here to verify your identity',
               style: const TextStyle(fontSize: 16),
             ),
             const SizedBox(height: 24),
@@ -85,7 +86,11 @@ class _OtpVerificationState extends State<OtpVerification> {
             ElevatedButton(
               onPressed: isButtonActive
                   ? () {
-                      // Confirm button logic
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => const ProfileSetupScreen()),
+                        );
                     }
                   : null,
               style: ElevatedButton.styleFrom(
