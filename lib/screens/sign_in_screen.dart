@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import '../widgets/social_sign_in_button.dart';
+import 'sign_up_screen.dart';
 
 class SignInScreen extends StatelessWidget {
   const SignInScreen({super.key});
@@ -13,8 +15,7 @@ class SignInScreen extends StatelessWidget {
             child: DecoratedBox(
               decoration: BoxDecoration(
                 color: Colors.white,
-                borderRadius:
-                    BorderRadius.circular(10),
+                borderRadius: BorderRadius.circular(10),
                 border: Border.all(
                   color: const Color(0xFFE5E7EB),
                   width: 1,
@@ -132,14 +133,15 @@ class SignInScreen extends StatelessWidget {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: <Widget>[
-                  _buildSocialSignInButton(
-                    'assets/images/google_icon.svg',
-                    'Google',
+                  SocialSignInButton(
+                    assetName: 'assets/images/google_icon.svg',
+                    label: 'Google',
+                    onPressed: () {},
                   ),
-                  _buildSocialSignInButton(
-                    'assets/images/apple_icon.svg',
-                    'Apple',
-                  ),
+                  SocialSignInButton(
+                      assetName: 'assets/images/apple_icon.svg',
+                      label: 'Apple',
+                      onPressed: () {}),
                 ],
               ),
               Padding(
@@ -154,6 +156,11 @@ class SignInScreen extends StatelessWidget {
                     TextButton(
                       onPressed: () {
                         // Navigate to sign up
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => const SignUpScreen()),
+                        );
                       },
                       child: const Text(
                         'Sign Up',
@@ -168,36 +175,3 @@ class SignInScreen extends StatelessWidget {
         ));
   }
 }
-
-Widget _buildSocialSignInButton(String assetName, String label) {
-  return Container(
-    width: 150,
-    decoration: BoxDecoration(
-      borderRadius: BorderRadius.circular(8),
-      border: Border.all(color: const Color(0xFFE5E7EB)),
-      color: Colors.white,
-    ),
-    child: TextButton(
-      onPressed: () {
-        // Handle social sign-in logic
-      },
-      style: TextButton.styleFrom(
-        backgroundColor: Colors.white,
-        padding: const EdgeInsets.symmetric(vertical: 16.0, horizontal: 24.0),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(8),
-        ),
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          SvgPicture.asset(assetName, width: 24, height: 24),
-          if (label.isNotEmpty) ...[
-            const SizedBox(width: 10),
-          ],
-        ],
-      ),
-    ),
-  );
-}
-
