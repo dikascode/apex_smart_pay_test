@@ -96,7 +96,7 @@ String _redactEmail(String email) {
                       // Sign up onPress logic
                      _onSignUpPressed();
                     }
-                  : null, // Disables the button when email is not filled
+                  : null,
               style: ElevatedButton.styleFrom(
                 backgroundColor: _isEmailFilled ? const Color(0xFF111827) : Colors.grey[400],
                 foregroundColor: Colors.white,

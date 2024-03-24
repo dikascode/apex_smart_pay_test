@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../widgets/custom_back_button.dart';
 import 'package:country_list_pick/country_list_pick.dart';
+import 'create_pin_screen.dart';
 
 class ProfileSetupScreen extends StatefulWidget {
   const ProfileSetupScreen({super.key});
@@ -167,7 +168,11 @@ void _showCountryPicker() {
             ElevatedButton(
               onPressed: isButtonActive
                   ? () {
-                      // Handle profile setup logic
+                       Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => const CreatePinScreen()),
+                        );
                     }
                   : null,
               style: ElevatedButton.styleFrom(

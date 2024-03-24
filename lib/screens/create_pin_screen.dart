@@ -1,18 +1,18 @@
 import 'package:flutter/material.dart';
 import '../widgets/custom_back_button.dart';
-import 'profile_setup_screen.dart';
 import '../utils/pin_field_utils.dart';
+import 'confirmation_screen.dart';
 
-class OtpVerification extends StatefulWidget {
-  final String redactedEmail;
-  const OtpVerification({super.key, required this.redactedEmail});
+class CreatePinScreen extends StatefulWidget {
+  const CreatePinScreen({super.key});
 
   @override
-  _OtpVerificationState createState() => _OtpVerificationState();
+  _CreatePinScreenState createState() => _CreatePinScreenState();
+    
 }
 
-class _OtpVerificationState extends State<OtpVerification> {
-  final codeLength = 5;
+class _CreatePinScreenState extends State<CreatePinScreen> {
+final codeLength = 5;
   List<TextEditingController> controllers = [];
   List<FocusNode> focusNodes = [];
   bool isButtonActive = false;
@@ -59,29 +59,21 @@ class _OtpVerificationState extends State<OtpVerification> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             const Text(
-              'Verify it\'s you',
+              'Set your PIN code',
               style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 8),
-            Text(
-              'We sent a code to (${widget.redactedEmail}). Enter it here to verify your identity',
-              style:  const TextStyle(fontSize: 16, color: Color(0xFF6B7280)),
+            const Text(
+              'We use state-of-the-art security measures to protect your information at all times',
+              style:  TextStyle(fontSize: 16, color: Color(0xFF6B7280)),
             ),
             const SizedBox(height: 24),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children:
-                  List.generate(codeLength, (index) => _buildCodeBox(index)),
+                  List.generate(codeLength, (index) => _buildPinBox(index)),
             ),
-            const SizedBox(height: 30),
-            const Text(
-              'Resend Code 30 secs',
-              style: TextStyle(
-                  fontSize: 14,
-                  fontWeight: FontWeight.bold,
-                  color: Color.fromARGB(255, 106, 105, 105)),
-              textAlign: TextAlign.center,
-            ),
+    
             const SizedBox(height: 60),
             ElevatedButton(
               onPressed: isButtonActive
@@ -89,7 +81,7 @@ class _OtpVerificationState extends State<OtpVerification> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => const ProfileSetupScreen()),
+                              builder: (context) => const ConfirmationScreen()),
                         );
                     }
                   : null,
@@ -103,11 +95,7 @@ class _OtpVerificationState extends State<OtpVerification> {
                 ),
                 padding: const EdgeInsets.all(16),
               ),
-              child: const Text('Confirm',
-                  style: TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                  )),
+              child: const Text('Create PIN'),
             ),
           ],
         ),
@@ -115,31 +103,34 @@ class _OtpVerificationState extends State<OtpVerification> {
     );
   }
 
-  Widget _buildCodeBox(int index) {
-    return Container(
+ Widget _buildPinBox(int index) {
+    return SizedBox(
       width: 50,
       height: 50,
-      decoration: BoxDecoration(
-        color: const Color.fromARGB(255, 223, 232, 241),
-        borderRadius: BorderRadius.circular(8),
-        border: Border.all(
-          color: focusNodes[index].hasFocus
-              ? const Color(0xFF2FA2B9)
-              : Colors.transparent,
-          width: 2,
-        ),
-      ),
-      child: TextField(
+      child: TextFormField(
         controller: controllers[index],
         focusNode: focusNodes[index],
         textAlign: TextAlign.center,
         maxLength: 1,
+        obscureText: true,
+        obscuringCharacter: '●',
         decoration: const InputDecoration(
           counterText: "",
-          border: InputBorder.none,
+          enabledBorder: UnderlineInputBorder(
+            borderSide: BorderSide(
+              color: Color.fromARGB(255, 223, 232, 241),
+              width: 2,
+            ),
+          ),
+          focusedBorder: UnderlineInputBorder(
+            borderSide: BorderSide(
+              color: Color(0xFF2FA2B9),
+              width: 2,
+            ),
+          ),
         ),
         keyboardType: TextInputType.number,
-        onChanged: (value) => PinFieldUtils.handlePinFieldChange(value, index, focusNodes, codeLength, context)
+        onChanged: (value) => PinFieldUtils.handlePinFieldChange(value, index, focusNodes, codeLength, context),
       ),
     );
   }
