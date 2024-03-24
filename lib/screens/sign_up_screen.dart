@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
+import 'package:smart_pay/screens/otp_verification.dart';
+import '../widgets/custom_back_button.dart';
 import '../widgets/social_sign_in_button.dart';
 
 class SignUpScreen extends StatefulWidget {
@@ -34,32 +35,35 @@ class _SignUpScreenState extends State<SignUpScreen> {
     }
   }
 
+  void _onSignUpPressed() {
+  final String userEmail = _emailController.text;
+    final String redactedEmail = _redactEmail(userEmail); 
+
+  Navigator.push(
+    context,
+    MaterialPageRoute(
+      builder: (context) => OtpVerification(redactedEmail: redactedEmail),
+    ),
+  );
+}
+
+String _redactEmail(String email) {
+  final atIndex = email.indexOf('@');
+  if (atIndex != -1) {
+    return '*****${email.substring(atIndex)}';
+  } else {
+    return '*****@example.com'; // Fallback in case the email does not contain '@'
+  }
+}
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          leading: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: DecoratedBox(
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius:
-                    BorderRadius.circular(10),
-                border: Border.all(
-                  color: const Color(0xFFE5E7EB),
-                  width: 1,
-                ),
-              ),
-              child: IconButton(
-                icon: SvgPicture.asset(
-                  'assets/images/back_icon.svg',
-                ),
-                onPressed: () => Navigator.of(context).pop(),
-              ),
-            ),
-          ),
-          elevation: 0,
-        ),
+        leading: const CustomBackButton(),
+        elevation: 0,
+      ),
         body: SingleChildScrollView(
           padding: const EdgeInsets.all(16.0),
           child: Column(
@@ -83,12 +87,14 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   ),
                   hintStyle: const TextStyle(color: Color(0xFF9CA3AF)),
                 ),
+                keyboardType: TextInputType.emailAddress
               ),
               const SizedBox(height: 24.0),
                ElevatedButton(
               onPressed: _isEmailFilled
                   ? () {
                       // Sign up onPress logic
+                     _onSignUpPressed();
                     }
                   : null, // Disables the button when email is not filled
               style: ElevatedButton.styleFrom(

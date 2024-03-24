@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import '../widgets/social_sign_in_button.dart';
 import 'sign_up_screen.dart';
+import '../widgets/custom_back_button.dart';
 
 class SignInScreen extends StatelessWidget {
   const SignInScreen({super.key});
@@ -10,26 +10,8 @@ class SignInScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          leading: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: DecoratedBox(
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(10),
-                border: Border.all(
-                  color: const Color(0xFFE5E7EB),
-                  width: 1,
-                ),
-              ),
-              child: IconButton(
-                icon: SvgPicture.asset(
-                  'assets/images/back_icon.svg',
-                ),
-                onPressed: () => Navigator.of(context).pop(),
-              ),
-            ),
-          ),
-          elevation: 0,
+        leading: const CustomBackButton(),
+        elevation: 0,
         ),
         body: SingleChildScrollView(
           padding: const EdgeInsets.all(16.0),
@@ -58,6 +40,7 @@ class SignInScreen extends StatelessWidget {
                   ),
                   hintStyle: const TextStyle(color: Color(0xFF9CA3AF)),
                 ),
+                keyboardType: TextInputType.emailAddress
               ),
               const SizedBox(height: 16.0),
               TextField(
@@ -74,6 +57,7 @@ class SignInScreen extends StatelessWidget {
                       color: Color(0xFF9CA3AF)),
                 ),
                 obscureText: true,
+                keyboardType: TextInputType.visiblePassword
               ),
               Align(
                 alignment: Alignment.centerLeft,
