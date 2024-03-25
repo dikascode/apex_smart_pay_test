@@ -1,19 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../widgets/custom_back_button.dart';
 import '../utils/pin_field_utils.dart';
 import 'confirmation_screen.dart';
 import '../styles/styles.dart';
 
 class CreatePinScreen extends StatefulWidget {
-  const CreatePinScreen({super.key});
+  const CreatePinScreen({Key? key}) : super(key: key);
 
   @override
   _CreatePinScreenState createState() => _CreatePinScreenState();
-    
 }
 
 class _CreatePinScreenState extends State<CreatePinScreen> {
-final codeLength = 5;
+  final codeLength = 5;
   List<TextEditingController> controllers = [];
   List<FocusNode> focusNodes = [];
   bool _isButtonActive = false;
@@ -24,19 +24,17 @@ final codeLength = 5;
     for (int i = 0; i < codeLength; i++) {
       controllers.add(TextEditingController());
       focusNodes.add(FocusNode());
-      // Add listener to each controller
-      controllers[i].addListener(() {
-        // Update isButtonActive when any field changes
-        final allFilled =
-            controllers.every((controller) => controller.text.isNotEmpty);
-        setState(() => _isButtonActive = allFilled);
-      });
+      controllers[i].addListener(_updateButtonState);
     }
+  }
+
+  void _updateButtonState() {
+    final allFilled = controllers.every((controller) => controller.text.isNotEmpty);
+    setState(() => _isButtonActive = allFilled);
   }
 
   @override
   void dispose() {
-    // Dispose all controllers and focus nodes
     for (var controller in controllers) {
       controller.dispose();
     }
@@ -44,6 +42,26 @@ final codeLength = 5;
       focusNode.dispose();
     }
     super.dispose();
+  }
+
+  Future<void> _savePinAndNavigate() async {
+    // Concatenate the inputs from each PIN field into a single PIN string
+    final pin = controllers.map((controller) => controller.text).join();
+
+    // Save the PIN in SharedPreferences
+    final prefs = await SharedPreferences.getInstance();
+     bool saveSuccess = await prefs.setString('userPin', pin);
+
+    if (saveSuccess) {
+    print("PIN saved successfully: $pin");
+    // Navigate to the ConfirmationScreen
+    Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const ConfirmationScreen()));
+  } else {
+    print("Failed to save PIN.");
+  }
+
+    // Navigate to the ConfirmationScreen
+    Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const ConfirmationScreen()));
   }
 
   @override
@@ -66,26 +84,16 @@ final codeLength = 5;
             const SizedBox(height: 8),
             const Text(
               'We use state-of-the-art security measures to protect your information at all times',
-              style:  customSubtitleTextStyle,
+              style: customSubtitleTextStyle,
             ),
             const SizedBox(height: 24),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children:
-                  List.generate(codeLength, (index) => _buildPinBox(index)),
+              children: List.generate(codeLength, (index) => _buildPinBox(index)),
             ),
-    
             const SizedBox(height: 60),
             ElevatedButton(
-              onPressed: _isButtonActive
-                  ? () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => const ConfirmationScreen()),
-                        );
-                    }
-                  : null,
+              onPressed: _isButtonActive ? _savePinAndNavigate : null,
               style: activeButtonStyle(_isButtonActive),
               child: const Text('Create PIN', style: customButtonBoldTextStyle),
             ),
