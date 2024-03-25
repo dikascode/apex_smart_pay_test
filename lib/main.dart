@@ -21,8 +21,8 @@ class MyApp extends StatelessWidget {
 
   Future<Widget> _getInitialScreen() async {
     final prefs = await SharedPreferences.getInstance();
-    final userPinExists = prefs.getString('userPin') != null;
-    if (userPinExists) {
+    final userTokenExists = prefs.getString('userToken') != null;
+    if (userTokenExists) {
       // Navigate to PinLoginScreen if user data exists
       return const PinLoginScreen();
     } else {

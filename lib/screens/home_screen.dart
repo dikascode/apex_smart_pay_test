@@ -26,7 +26,9 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Future<void> _logout() async {
     final prefs = await SharedPreferences.getInstance();
-    await prefs.clear();
+
+    prefs.remove('userToken');
+    prefs.remove('userData');
     Navigator.of(context).pushAndRemoveUntil(
       MaterialPageRoute(builder: (context) => const OnboardingScreens()),
       (Route<dynamic> route) => false,
