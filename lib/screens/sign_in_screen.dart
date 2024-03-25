@@ -1,9 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:smart_pay/screens/home_screen.dart';
 import 'package:smart_pay/styles/styles.dart';
 import '../widgets/social_sign_in_button.dart';
 import 'sign_up_screen.dart';
 import '../widgets/custom_back_button.dart';
 import 'password_recovery_screen.dart';
+import 'package:provider/provider.dart';
+import '../services/auth_service.dart';
+import 'dart:convert';
+import '../utils/dialog_utils.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class SignInScreen extends StatefulWidget {
   const SignInScreen({super.key});
@@ -36,6 +42,32 @@ class _SignInScreenState extends State<SignInScreen> {
     _emailController.dispose();
     _passwordController.dispose();
     super.dispose();
+  }
+
+  Future<void> _signInAndNavigate() async {
+    showLoadingDialog(context);
+
+  final response = await Provider.of<AuthService>(context, listen: false).login(
+    email: _emailController.text,
+    password: _passwordController.text,
+    deviceName: 'mobile',
+  );
+
+  hideLoadingDialog(context);
+
+  if (response['success']) {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString('userToken', response['token']);
+    await prefs.setString('userData', jsonEncode(response['user']));
+
+    print('SharePref: token:${jsonEncode(response['user'])}, ');
+
+    Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const HomeScreen()));
+  } else {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(response['message'] ?? 'Login failed. Please try again.')),
+    );
+  }
   }
 
   @override
@@ -91,7 +123,7 @@ class _SignInScreenState extends State<SignInScreen> {
               const SizedBox(height: 24.0),
               ElevatedButton(
                 onPressed: () {
-                  // Sign in onpress
+                 _signInAndNavigate();
                 },
                 style: activeButtonStyle(_isButtonActive),
                 child: const Text('Sign In', style: customButtonBoldTextStyle),

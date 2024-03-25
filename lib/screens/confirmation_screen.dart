@@ -27,7 +27,7 @@ class _ConfirmationScreenState extends State<ConfirmationScreen> {
     final String? userDataJson = prefs.getString('userData');
     if (userDataJson != null) {
       final Map<String, dynamic> userData = jsonDecode(userDataJson);
-      final String username = userData['username']; 
+      final String username = userData['username'];
       setState(() {
         _username = username;
       });
@@ -79,7 +79,8 @@ class _ConfirmationScreenState extends State<ConfirmationScreen> {
                 );
               },
               style: activeButtonStyle(true),
-              child: const Text('Get Started', style: customButtonBoldTextStyle),
+              child:
+                  const Text('Get Started', style: customButtonBoldTextStyle),
             ),
           ],
         ),

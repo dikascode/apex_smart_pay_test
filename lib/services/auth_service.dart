@@ -64,4 +64,41 @@ Future<Map<String, dynamic>> register({
       return {'success': false, 'message': 'An unexpected error occurred.'};
     }
   }
+
+
+  Future<Map<String, dynamic>> login({
+    required String email,
+    required String password,
+    required String deviceName,
+  }) async {
+    try {
+      final responseData = await post(
+        'auth/login',
+        body: {
+          'email': email,
+          'password': password,
+          'device_name': deviceName,
+        },
+      );
+
+      if (responseData['status'] == true) {
+        final String token = responseData['data']['token'];
+        final Map<String, dynamic> user = responseData['data']['user'];
+
+        return {
+          'success': true,
+          'token': token,
+          'user': user
+        };
+      } else {
+        return {'success': false, 'message': 'Unexpected status flag'};
+      }
+    } on ApiException catch (apiError) {
+      // Handling API-specific errors.
+      return {'success': false, 'message': apiError.message};
+    } catch (error) {
+      // Handling other unexpected errors.
+      return {'success': false, 'message': 'An unexpected error occurred.'};
+    }
+  }
 }
