@@ -26,4 +26,21 @@ class AuthService extends BaseService with ChangeNotifier {
       return {'success': false, 'message': error.toString()};
     }
   }
+
+
+   Future<bool> verifyEmailToken(String email, String token) async {
+    try {
+      final responseData = await post('auth/email/verify', body: {'email': email, 'token': token});
+      if (responseData['status'] == true) {
+         print('Successful Response: $responseData');
+        return true;
+      } else {
+         print('Failed Response: $responseData');
+        return false;
+      }
+    } catch (error) {
+      print('Error verifying email token: $error');
+      return false;
+    }
+  }
 }

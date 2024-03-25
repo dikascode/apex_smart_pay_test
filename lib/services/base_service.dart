@@ -13,4 +13,10 @@ class BaseService {
       throw Exception('Failed to load data!');
     }
   }
+
+   Future<dynamic> post(String endpoint, {Map<String, String>? body}) async {
+    final url = Uri.parse('$baseUrl/$endpoint');
+    final response = await http.post(url, body: body);
+    return handleResponse(response);
+  }
 }

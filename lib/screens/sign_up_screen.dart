@@ -55,7 +55,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
         context,
         MaterialPageRoute(
           builder: (context) => OtpVerification(
-              redactedEmail: _redactEmail(userEmail), token: token),
+              userEmail: userEmail, token: token),
         ),
       );
     } else {
@@ -66,15 +66,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
           duration: const Duration(seconds: 3),
         ),
       );
-    }
-  }
-
-  String _redactEmail(String email) {
-    final atIndex = email.indexOf('@');
-    if (atIndex != -1) {
-      return '*****${email.substring(atIndex)}';
-    } else {
-      return '*****@example.com'; // Fallback in case the email does not contain '@'
     }
   }
 

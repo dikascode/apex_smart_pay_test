@@ -3,11 +3,15 @@ import '../widgets/custom_back_button.dart';
 import 'profile_setup_screen.dart';
 import '../utils/pin_field_utils.dart';
 import '../styles/styles.dart';
+import '../utils/dialog_utils.dart';
+import 'package:provider/provider.dart';
+import '../services/auth_service.dart';
 
 class OtpVerification extends StatefulWidget {
-  final String redactedEmail;
+  final String userEmail;
   final String token;
-  const OtpVerification({super.key, required this.redactedEmail, required this.token});
+  const OtpVerification(
+      {super.key, required this.userEmail, required this.token});
 
   @override
   _OtpVerificationState createState() => _OtpVerificationState();
@@ -47,6 +51,31 @@ class _OtpVerificationState extends State<OtpVerification> {
     super.dispose();
   }
 
+  String _redactEmail(String email) {
+    final atIndex = email.indexOf('@');
+    if (atIndex != -1) {
+      return '*****${email.substring(atIndex)}';
+    } else {
+      return '*****@example.com'; // Fallback in case the email does not contain '@'
+    }
+  }
+
+  //verify token call
+  void _verifyToken() async {
+    showLoadingDialog(context);
+    final isSuccess = await Provider.of<AuthService>(context, listen: false)
+        .verifyEmailToken(widget.userEmail, widget.token);
+    hideLoadingDialog(context);
+
+    if (isSuccess) {
+      Navigator.pushReplacement(context,
+          MaterialPageRoute(builder: (_) => const ProfileSetupScreen()));
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+          content: Text('Verification failed. Please try again.')));
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -66,7 +95,7 @@ class _OtpVerificationState extends State<OtpVerification> {
             ),
             const SizedBox(height: 8),
             Text(
-              'We sent a code to (${widget.redactedEmail}). Enter it here to verify your identity',
+              'Here is the token sent to (${_redactEmail(widget.userEmail)}) : ${widget.token}. Please input it to continue',
               style: customSubtitleTextStyle,
             ),
             const SizedBox(height: 24),
@@ -78,26 +107,21 @@ class _OtpVerificationState extends State<OtpVerification> {
             const SizedBox(height: 30),
             const Text(
               'Resend Code 30 secs',
-              style: TextStyle(
-                  fontSize: 14,
-                  fontWeight: FontWeight.bold,
-                  color: Color.fromARGB(255, 106, 105, 105)),
+              style: customSubtitleTextStyle,
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 60),
             ElevatedButton(
               onPressed: _isButtonActive
                   ? () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => const ProfileSetupScreen()),
-                      );
+                      _verifyToken();
                     }
                   : null,
               style: activeButtonStyle(_isButtonActive),
-              child: const Text('Confirm',
-                  style: customButtonBoldTextStyle,),
+              child: const Text(
+                'Confirm',
+                style: customButtonBoldTextStyle,
+              ),
             ),
           ],
         ),
