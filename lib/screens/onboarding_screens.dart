@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'home_screen.dart';
 import 'onboarding_content_1.dart';
 import 'onboarding_content_2.dart';
 import 'sign_in_screen.dart';
@@ -47,7 +46,7 @@ class _OnboardingScreensState extends State<OnboardingScreens> {
               context,
               MaterialPageRoute(builder: (context) => const SignInScreen()),
             ),
-            child: const Text('Skip', style: TextStyle(color: Colors.black)),
+            child: const Text('Skip', style: TextStyle(color: Color(0xFF2FA2B9), fontSize: 16)),
           ),
         ],
       ),

@@ -8,6 +8,7 @@ import '../utils/dialog_utils.dart';
 import 'package:provider/provider.dart';
 import '../services/auth_service.dart';
 import 'dart:convert';
+import '../widgets/password_field.dart';
 
 class ProfileSetupScreen extends StatefulWidget {
   final String userEmail;
@@ -176,11 +177,10 @@ Future<void> _registerAndNavigate() async {
               ),
             ),
             const SizedBox(height: 16),
-            TextField(
-              controller: _passwordController,
-              obscureText: true,
-              decoration: customInputDecoration('Password'),
-            ),
+             PasswordField(
+                controller: _passwordController,
+                hintText: 'Password',
+              ),
             const SizedBox(height: 30),
             ElevatedButton(
               onPressed: _isButtonActive

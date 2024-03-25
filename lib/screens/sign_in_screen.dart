@@ -10,6 +10,7 @@ import '../services/auth_service.dart';
 import 'dart:convert';
 import '../utils/dialog_utils.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import '../widgets/password_field.dart';
 
 class SignInScreen extends StatefulWidget {
   const SignInScreen({super.key});
@@ -47,27 +48,31 @@ class _SignInScreenState extends State<SignInScreen> {
   Future<void> _signInAndNavigate() async {
     showLoadingDialog(context);
 
-  final response = await Provider.of<AuthService>(context, listen: false).login(
-    email: _emailController.text,
-    password: _passwordController.text,
-    deviceName: 'mobile',
-  );
-
-  hideLoadingDialog(context);
-
-  if (response['success']) {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setString('userToken', response['token']);
-    await prefs.setString('userData', jsonEncode(response['user']));
-
-    print('SharePref: token:${jsonEncode(response['user'])}, ');
-
-    Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const HomeScreen()));
-  } else {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(response['message'] ?? 'Login failed. Please try again.')),
+    final response =
+        await Provider.of<AuthService>(context, listen: false).login(
+      email: _emailController.text,
+      password: _passwordController.text,
+      deviceName: 'mobile',
     );
-  }
+
+    hideLoadingDialog(context);
+
+    if (response['success']) {
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setString('userToken', response['token']);
+      await prefs.setString('userData', jsonEncode(response['user']));
+
+      print('SharePref: token:${jsonEncode(response['user'])}, ');
+
+      Navigator.pushReplacement(
+          context, MaterialPageRoute(builder: (_) => const HomeScreen()));
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+            content:
+                Text(response['message'] ?? 'Login failed. Please try again.')),
+      );
+    }
   }
 
   @override
@@ -98,11 +103,10 @@ class _SignInScreenState extends State<SignInScreen> {
                   decoration: customInputDecoration('Email'),
                   keyboardType: TextInputType.emailAddress),
               const SizedBox(height: 16.0),
-              TextField(
-                  controller: _passwordController,
-                  decoration: customInputDecoration('Password'),
-                  obscureText: true,
-                  keyboardType: TextInputType.visiblePassword),
+              PasswordField(
+                controller: _passwordController,
+                hintText: 'Password',
+              ),
               Align(
                 alignment: Alignment.centerLeft,
                 child: TextButton(
@@ -123,7 +127,7 @@ class _SignInScreenState extends State<SignInScreen> {
               const SizedBox(height: 24.0),
               ElevatedButton(
                 onPressed: () {
-                 _signInAndNavigate();
+                  _signInAndNavigate();
                 },
                 style: activeButtonStyle(_isButtonActive),
                 child: const Text('Sign In', style: customButtonBoldTextStyle),

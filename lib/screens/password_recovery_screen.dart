@@ -77,13 +77,11 @@ class _PasswordRecoveryScreenState extends State<PasswordRecoveryScreen> {
                   fillColor: const Color(0xFFF9FAFB),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(8.0),
-                    borderSide: BorderSide
-                        .none,
+                    borderSide: BorderSide.none,
                   ),
                   enabledBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(8.0),
-                    borderSide: BorderSide
-                        .none,
+                    borderSide: BorderSide.none,
                   ),
                   focusedBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(8.0),
@@ -106,7 +104,7 @@ class _PasswordRecoveryScreenState extends State<PasswordRecoveryScreen> {
           bottom: MediaQuery.of(context).viewInsets.bottom + 16,
           left: 16.0,
           right: 16.0,
-          top: 16.0, 
+          top: 16.0,
         ),
         child: ElevatedButton(
           onPressed: _isButtonActive
