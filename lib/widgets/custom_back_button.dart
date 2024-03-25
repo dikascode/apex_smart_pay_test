@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 class CustomBackButton extends StatelessWidget {
-  const CustomBackButton({super.key});
+  final VoidCallback? onPressed;
+  const CustomBackButton({super.key,  this.onPressed});
 
   @override
   Widget build(BuildContext context) {
@@ -21,7 +22,7 @@ class CustomBackButton extends StatelessWidget {
           icon: SvgPicture.asset(
             'assets/images/back_icon.svg',
           ),
-          onPressed: () => Navigator.of(context).pop(),
+          onPressed: onPressed ?? () => Navigator.of(context).pop(),
         ),
       ),
     );

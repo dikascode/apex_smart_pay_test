@@ -49,7 +49,9 @@ class _PinLoginScreenState extends State<PinLoginScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leading: const CustomBackButton(),
+         leading: CustomBackButton(
+            onPressed: () {},
+          ),
         elevation: 0,
       ),
       body: Padding(

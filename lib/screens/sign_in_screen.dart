@@ -79,7 +79,9 @@ class _SignInScreenState extends State<SignInScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          leading: const CustomBackButton(),
+          leading: CustomBackButton(
+            onPressed: () {},
+          ),
           elevation: 0,
         ),
         body: SingleChildScrollView(
