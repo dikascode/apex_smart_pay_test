@@ -73,9 +73,9 @@ class _ConfirmationScreenState extends State<ConfirmationScreen> {
             const SizedBox(height: 48),
             ElevatedButton(
               onPressed: () {
-                Navigator.pushReplacement(
-                  context,
+                Navigator.of(context).pushAndRemoveUntil(
                   MaterialPageRoute(builder: (context) => const HomeScreen()),
+                  (Route<dynamic> route) => false,
                 );
               },
               style: activeButtonStyle(true),
