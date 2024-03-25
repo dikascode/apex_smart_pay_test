@@ -4,6 +4,9 @@ import '../widgets/custom_back_button.dart';
 import '../widgets/social_sign_in_button.dart';
 import 'sign_in_screen.dart';
 import '../styles/styles.dart';
+import 'package:provider/provider.dart';
+import '../services/auth_service.dart';
+import '../utils/dialog_utils.dart';
 
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({super.key});
@@ -37,16 +40,33 @@ class _SignUpScreenState extends State<SignUpScreen> {
     }
   }
 
-  void _onSignUpPressed() {
-    final String userEmail = _emailController.text;
-    final String redactedEmail = _redactEmail(userEmail);
+  void _onSignUpPressed() async {
+    showLoadingDialog(context);
 
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => OtpVerification(redactedEmail: redactedEmail),
-      ),
-    );
+    final String userEmail = _emailController.text;
+    final response = await Provider.of<AuthService>(context, listen: false)
+        .getEmailToken(userEmail);
+    hideLoadingDialog(context);
+
+    if (response['success']) {
+      // Successful API call with token received.
+      String token = response['data'];
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => OtpVerification(
+              redactedEmail: _redactEmail(userEmail), token: token),
+        ),
+      );
+    } else {
+      // Unsuccessful call
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(response['message']),
+          duration: const Duration(seconds: 3),
+        ),
+      );
+    }
   }
 
   String _redactEmail(String email) {

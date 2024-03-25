@@ -6,7 +6,8 @@ import '../styles/styles.dart';
 
 class OtpVerification extends StatefulWidget {
   final String redactedEmail;
-  const OtpVerification({super.key, required this.redactedEmail});
+  final String token;
+  const OtpVerification({super.key, required this.redactedEmail, required this.token});
 
   @override
   _OtpVerificationState createState() => _OtpVerificationState();
