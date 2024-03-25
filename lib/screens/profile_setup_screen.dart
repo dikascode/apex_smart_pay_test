@@ -3,9 +3,18 @@ import '../widgets/custom_back_button.dart';
 import 'package:country_list_pick/country_list_pick.dart';
 import 'create_pin_screen.dart';
 import '../styles/styles.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import '../utils/dialog_utils.dart';
+import 'package:provider/provider.dart';
+import '../services/auth_service.dart';
+import 'dart:convert';
 
 class ProfileSetupScreen extends StatefulWidget {
-  const ProfileSetupScreen({super.key});
+  final String userEmail;
+  const ProfileSetupScreen({
+    super.key,
+    required this.userEmail,
+  });
 
   @override
   _ProfileSetupScreenState createState() => _ProfileSetupScreenState();
@@ -17,6 +26,37 @@ class _ProfileSetupScreenState extends State<ProfileSetupScreen> {
   final TextEditingController _passwordController = TextEditingController();
   String _selectedCountry = 'Select Country';
   bool _isButtonActive = false;
+
+Future<void> _registerAndNavigate() async {
+  showLoadingDialog(context);
+
+  final response = await Provider.of<AuthService>(context, listen: false).register(
+    fullName: _fullNameController.text,
+    username: _usernameController.text,
+    email: widget.userEmail,
+    country: 'NG', // TODO: create mapper for abbr to match country name as api only accepts 2 letter for country
+    password: _passwordController.text,
+    deviceName: 'mobile',
+  );
+
+  hideLoadingDialog(context);
+
+  if (response['success']) {
+    // Save user data and token to SharedPreferences
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString('userToken', response['token']);
+    await prefs.setString('userData', jsonEncode(response['user']));
+
+    print('SharePref: token:${jsonEncode(response['user'])}, ');
+
+    // Navigate to the CreatePinScreen
+    Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const CreatePinScreen()));
+  } else {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(response['message'] ?? 'Registration failed. Please try again.')),
+    );
+  }
+}
 
   void checkIfButtonShouldBeActive() {
     setState(() {
@@ -145,11 +185,7 @@ class _ProfileSetupScreenState extends State<ProfileSetupScreen> {
             ElevatedButton(
               onPressed: _isButtonActive
                   ? () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => const CreatePinScreen()),
-                      );
+                      _registerAndNavigate();
                     }
                   : null,
               style: activeButtonStyle(_isButtonActive),

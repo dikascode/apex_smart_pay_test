@@ -69,7 +69,7 @@ class _OtpVerificationState extends State<OtpVerification> {
 
     if (isSuccess) {
       Navigator.pushReplacement(context,
-          MaterialPageRoute(builder: (_) => const ProfileSetupScreen()));
+          MaterialPageRoute(builder: (_) => ProfileSetupScreen(userEmail: widget.userEmail,)));
     } else {
       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
           content: Text('Verification failed. Please try again.')));

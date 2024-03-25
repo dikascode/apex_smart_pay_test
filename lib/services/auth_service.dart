@@ -1,46 +1,67 @@
 import 'package:flutter/material.dart';
 import 'base_service.dart';
-import 'package:http/http.dart' as http;
-import 'dart:convert';
+import 'api_exception.dart';
 
 class AuthService extends BaseService with ChangeNotifier {
-  Future<Map<String, dynamic>> getEmailToken(String email) async {
-    final url = Uri.parse('$baseUrl/auth/email');
+
+Future<Map<String, dynamic>> getEmailToken(String email) async {
     try {
-      final response = await http.post(url, body: {'email': email});
-      print('Response Status: ${response.statusCode}');
-      print('Response Body: ${response.body}');
-
-      final responseData = json.decode(response.body);
-      print('Decoded Response: $responseData');
-
-      if (responseData['status'] == true) {
-        print('Token Received: ${responseData['data']['token']}');
-        return {'success': true, 'data': responseData['data']['token']};
-      } else {
-        print('Error Message: ${responseData['message']}');
-        return {'success': false, 'message': responseData['message']};
-      }
+      final responseData = await post('auth/email', body: {'email': email});
+      return {'success': true, 'data': responseData['data']['token']};
     } catch (error) {
-      print('Exception Caught: $error');
       return {'success': false, 'message': error.toString()};
     }
   }
 
-
-   Future<bool> verifyEmailToken(String email, String token) async {
+  Future<bool> verifyEmailToken(String email, String token) async {
     try {
       final responseData = await post('auth/email/verify', body: {'email': email, 'token': token});
-      if (responseData['status'] == true) {
-         print('Successful Response: $responseData');
-        return true;
-      } else {
-         print('Failed Response: $responseData');
-        return false;
-      }
+      return responseData['status'] == true;
     } catch (error) {
-      print('Error verifying email token: $error');
+      print('Unexpected Error: $error');
       return false;
+    }
+  }
+
+Future<Map<String, dynamic>> register({
+    required String fullName,
+    required String username,
+    required String email,
+    required String country,
+    required String password,
+    required String deviceName,
+  }) async {
+    try {
+      final responseData = await post(
+        'auth/register',
+        body: {
+          'full_name': fullName,
+          'username': username,
+          'email': email,
+          'country': country,
+          'password': password,
+          'device_name': deviceName,
+        },
+      );
+
+      if (responseData['status'] == true) {
+        final String token = responseData['data']['token'];
+        final Map<String, dynamic> user = responseData['data']['user'];
+
+        return {
+          'success': true,
+          'token': token,
+          'user': user
+        };
+      } else {
+        return {'success': false, 'message': 'Unexpected status flag'};
+      }
+    } on ApiException catch (apiError) {
+      // Handling API-specific errors.
+      return {'success': false, 'message': apiError.message};
+    } catch (error) {
+      // Handling other unexpected errors.
+      return {'success': false, 'message': 'An unexpected error occurred.'};
     }
   }
 }
